@@ -2,41 +2,258 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Maths Quiz 3ème</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ MathX : Le Quiz 3ème</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; text-align: center; padding: 50px; }
-        .quiz-container { background: white; padding: 20px; border-radius: 10px; shadow: 0 0 10px rgba(0,0,0,0.1); display: inline-block; }
-        .question { font-size: 1.2em; margin-bottom: 20px; }
-        button { padding: 10px 20px; cursor: pointer; background: #3498db; color: white; border: none; border-radius: 5px; }
-        #resultat { margin-top: 20px; font-weight: bold; }
+        /* --- VARIABLES DE COULEUR --- */
+        :root {
+            --primary: #6c5ce7;    /* Violet moderne */
+            --bg: #f0f3f7;         /* Fond gris très clair */
+            --text: #2d3436;       /* Texte presque noir */
+            --correct: #00b894;    /* Vert succès */
+            --wrong: #ff7675;      /* Rouge erreur */
+            --shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        /* --- STYLES GENERAUX --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- LE CONTENEUR PRINCIPAL --- */
+        .quiz-container {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Titre principal */
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        /* Zone de la question */
+        .question-box {
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* --- LES BOUTONS DE RÉPONSE --- */
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background-color: white;
+            border: 2px solid #e0e0e0;
+            color: var(--text);
+            padding: 15px 20px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 400;
+            outline: none;
+        }
+
+        /* Effet au survol (PC uniquement) */
+        @media (hover: hover) {
+            .option-btn:hover {
+                border-color: var(--primary);
+                background-color: #f8f7ff;
+                transform: translateY(-2px);
+            }
+        }
+
+        /* --- ÉTATS CLICKS (DYNAMIQUES VIA JS) --- */
+        .option-btn.correct {
+            background-color: var(--correct);
+            border-color: var(--correct);
+            color: white;
+            animation: popIn 0.3s ease;
+        }
+
+        .option-btn.wrong {
+            background-color: var(--wrong);
+            border-color: var(--wrong);
+            color: white;
+            animation: shake 0.3s ease;
+        }
+
+        /* Désactiver les boutons après réponse */
+        .option-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* --- ZONE DE FEEDBACK --- */
+        #feedback {
+            margin-top: 25px;
+            min-height: 1.2em;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* --- ANIMATIONS CSS --- */
+        @keyframes popIn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Adaptations mobiles */
+        @media (max-width: 480px) {
+            .quiz-container { padding: 25px; }
+            h1 { font-size: 1.2rem; }
+            .question-text { font-size: 1.1rem; }
+            .option-btn { padding: 12px 15px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="quiz-container">
-    <h1>Révisions Brevet : Calcul Numérique</h1>
-    <div class="question" id="enonce">
-        Quelle est la forme développée de $(x + 3)^2$ ?
+    <h1>⚡ MathX Brevet</h1>
+    
+    <div class="question-box">
+        <p class="question-text" id="enonce">
+            </p>
     </div>
-    <input type="text" id="reponse" placeholder="Ta réponse ici">
-    <button onclick="verifier()">Vérifier</button>
-    <p id="resultat"></p>
+
+    <div class="options-container" id="options">
+        </div>
+
+    <p id="feedback"></p>
 </div>
 
 <script>
-    function verifier() {
-        const rep = document.getElementById('reponse').value.replace(/\s+/g, '');
-        const feedback = document.getElementById('resultat');
-        
-        // Correction pour (x+3)^2 = x^2 + 6x + 9
-        if(rep === "x^2+6x+9" || rep === "x**2+6x+9") {
-            feedback.innerHTML = "✅ Bravo ! C'est l'identité remarquable $a^2 + 2ab + b^2$.";
-            feedback.style.color = "green";
-        } else {
-            feedback.innerHTML = "❌ Dommage. Rappel : $(a+b)^2 = a^2 + 2ab + b^2$.";
-            feedback.style.color = "red";
+    // --- DONNÉES DU QUIZ ---
+    const listeQuestions = [
+        {
+            question: "Calcule : 3 + 2 × 5",
+            reponses: ["25", "13", "10", "15"],
+            correct: 1 // Indice de la bonne réponse (13 est à l'indice 1)
+        },
+        {
+            question: "Quelle est la racine carrée de 64 ?",
+            reponses: ["6", "7", "8", "9"],
+            correct: 2
+        },
+        {
+            question: "Développe : (x + 2)²",
+            reponses: ["x² + 4", "x² + 4x + 4", "x² + 2x + 4", "2x + 4"],
+            correct: 1
         }
+    ];
+
+    // Variables d'état
+    let questionActuelle = 0;
+
+    // --- FONCTIONS ---
+
+    // 1. Charger une question
+    function chargerQuestion() {
+        const data = listeQuestions[questionActuelle];
+        const enonceEl = document.getElementById('enonce');
+        const optionsEl = document.getElementById('options');
+        const feedbackEl = document.getElementById('feedback');
+
+        // Reset
+        feedbackEl.textContent = "";
+        optionsEl.innerHTML = ""; // Vider les anciens boutons
+
+        // Afficher l'énoncé
+        enonceEl.textContent = data.question;
+
+        // Créer les boutons d'option
+        data.reponses.forEach((texteReponse, index) => {
+            const bouton = document.createElement('button');
+            bouton.className = 'option-btn';
+            bouton.textContent = texteReponse;
+            bouton.onclick = () => verifierReponse(index, bouton);
+            optionsEl.appendChild(bouton);
+        });
     }
+
+    // 2. Vérifier la réponse cliquée
+    function verifierReponse(indexChoisi, boutonClique) {
+        const data = listeQuestions[questionActuelle];
+        const tousLesBoutons = document.querySelectorAll('.option-btn');
+        const feedbackEl = document.getElementById('feedback');
+
+        // Désactiver tous les boutons pour empêcher de rejouer
+        tousLesBoutons.forEach(btn => btn.disabled = true);
+
+        if (indexChoisi === data.correct) {
+            // BONNE RÉPONSE
+            boutonClique.classList.add('correct');
+            feedbackEl.textContent = "🥳 Excellent !";
+            feedbackEl.style.color = "var(--correct)";
+        } else {
+            // MAUVAISE RÉPONSE
+            boutonClique.classList.add('wrong');
+            // Montrer la bonne réponse en vert quand même
+            tousLesBoutons[data.correct].classList.add('correct');
+            feedbackEl.textContent = "😥 Oups... Regarde la correction.";
+            feedbackEl.style.color = "var(--wrong)";
+        }
+
+        // Passer à la question suivante après un petit délai (2 secondes)
+        setTimeout(() => {
+            questionActuelle++;
+            if (questionActuelle < listeQuestions.length) {
+                chargerQuestion();
+            } else {
+                // FIN DU QUIZ
+                document.querySelector('.quiz-container').innerHTML = `
+                    <h1>🎉 Terminé !</h1>
+                    <p class='question-text'>Merci d'avoir révisé avec MathX.</p>
+                    <button class='option-btn' style='margin-top:20px; background:var(--primary); color:white; border:none;' onclick='location.reload()'>Recommencer</button>
+                `;
+            }
+        }, 2000);
+    }
+
+    // --- Lancement au chargement de la page ---
+    chargerQuestion();
+
 </script>
 
 </body>
