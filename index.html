@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Maths Quiz 3ème</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; text-align: center; padding: 50px; }
+        .quiz-container { background: white; padding: 20px; border-radius: 10px; shadow: 0 0 10px rgba(0,0,0,0.1); display: inline-block; }
+        .question { font-size: 1.2em; margin-bottom: 20px; }
+        button { padding: 10px 20px; cursor: pointer; background: #3498db; color: white; border: none; border-radius: 5px; }
+        #resultat { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Révisions Brevet : Calcul Numérique</h1>
+    <div class="question" id="enonce">
+        Quelle est la forme développée de $(x + 3)^2$ ?
+    </div>
+    <input type="text" id="reponse" placeholder="Ta réponse ici">
+    <button onclick="verifier()">Vérifier</button>
+    <p id="resultat"></p>
+</div>
+
+<script>
+    function verifier() {
+        const rep = document.getElementById('reponse').value.replace(/\s+/g, '');
+        const feedback = document.getElementById('resultat');
+        
+        // Correction pour (x+3)^2 = x^2 + 6x + 9
+        if(rep === "x^2+6x+9" || rep === "x**2+6x+9") {
+            feedback.innerHTML = "✅ Bravo ! C'est l'identité remarquable $a^2 + 2ab + b^2$.";
+            feedback.style.color = "green";
+        } else {
+            feedback.innerHTML = "❌ Dommage. Rappel : $(a+b)^2 = a^2 + 2ab + b^2$.";
+            feedback.style.color = "red";
+        }
+    }
+</script>
+
+</body>
+</html>
