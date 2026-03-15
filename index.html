@@ -10,88 +10,65 @@
     <style>
         /* --- VARIABLES DE COULEUR --- */
         :root {
-            --primary: #6c5ce7;    /* Violet moderne */
-            --bg: #f0f3f7;         /* Fond gris très clair */
-            --text: #2d3436;       /* Texte presque noir */
-            --correct: #00b894;    /* Vert succès */
-            --wrong: #ff7675;      /* Rouge erreur */
-            --shadow: 0 10px 20px rgba(0,0,0,0.08);
-        }
+    /* Couleurs vibrantes */
+    --primary: #6366f1;    /* Indigo moderne */
+    --accent: #a855f7;     /* Violet */
+    --bg-gradient: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    --glass: rgba(255, 255, 255, 0.9);
+    --text: #1e293b;
+}
 
-        /* --- STYLES GENERAUX --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    
+    /* ANIMATION DU FOND */
+    background: var(--bg-gradient);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
 
-        /* --- LE CONTENEUR PRINCIPAL --- */
-        .quiz-container {
-            background: white;
-            width: 100%;
-            max-width: 500px;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            transition: all 0.3s ease;
-        }
+/* Animation fluide du background */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
-        /* Titre principal */
-        h1 {
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
+/* EFFET GLASSMORPHISM POUR LE QUIZ */
+.quiz-container {
+    background: var(--glass);
+    backdrop-filter: blur(10px); /* Flou derrière la carte */
+    -webkit-backdrop-filter: blur(10px);
+    width: 90%;
+    max-width: 450px;
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    text-align: center;
+}
 
-        /* Zone de la question */
-        .question-box {
-            margin-bottom: 30px;
-        }
+/* Boutons plus "Apple Style" */
+.option-btn {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.05);
+    padding: 16px;
+    border-radius: 16px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
 
-        .question-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-
-        /* --- LES BOUTONS DE RÉPONSE --- */
-        .options-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-
-        .option-btn {
-            background-color: white;
-            border: 2px solid #e0e0e0;
-            color: var(--text);
-            padding: 15px 20px;
-            font-size: 1rem;
-            font-family: 'Poppins', sans-serif;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 400;
-            outline: none;
-        }
-
-        /* Effet au survol (PC uniquement) */
-        @media (hover: hover) {
-            .option-btn:hover {
-                border-color: var(--primary);
-                background-color: #f8f7ff;
-                transform: translateY(-2px);
-            }
-        }
+.option-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    border-color: var(--primary);
+}
 
         /* --- ÉTATS CLICKS (DYNAMIQUES VIA JS) --- */
         .option-btn.correct {
